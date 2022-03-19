@@ -14,6 +14,18 @@ const Game = (() => {
     })();
 
     const gameOver = () => {
+        const removeModal = (modal) => {
+            modal.remove();
+            board = [,,,,,,,,,];
+            winner = '';
+            getElements.cells.forEach(cell => {
+                if(cell.classList.contains(x) || cell.classList.contains(o)) {
+                    cell.classList.remove(x);
+                    cell.classList.remove(o);
+                }
+            })
+        }
+
         const body = document.querySelector('body');
         const modal = document.createElement('div');
         const announce = document.createElement('h1');
@@ -26,15 +38,15 @@ const Game = (() => {
         modal.appendChild(announce);
         modal.appendChild(resetBtn);
         resetBtn.addEventListener('click', () => {
-            modal.remove();
-            board = [,,,,,,,,,];
-            winner = '';
-            getElements.cells.forEach(cell => {
-                if(cell.classList.contains(x) || cell.classList.contains(o)) {
-                    cell.classList.remove(x);
-                    cell.classList.remove(o);
-                }
-            })
+                modal.remove();
+                board = [,,,,,,,,,];
+                winner = '';
+                getElements.cells.forEach(cell => {
+                    if(cell.classList.contains(x) || cell.classList.contains(o)) {
+                        cell.classList.remove(x);
+                        cell.classList.remove(o);
+                    }
+                })
         })
     }
 
