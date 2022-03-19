@@ -5,6 +5,7 @@ const Game = (() => {
         - undo button
         - modal (start & end) design
         - require non-blank names
+        - create draw scenario
     */
     //init values
     const Elements = (() => {
