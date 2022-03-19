@@ -1,0 +1,56 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    flex-flow: column;
+    justify-content: center;
+    background-color: black;
+    align-items: center;
+}
+
+.board-wrapper {
+    width: 80vmin;
+    height: 80vmin;
+    border: 1px solid white;
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+}
+
+.cell {
+    border: 1px solid white;
+    border-collapse: collapse;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.x::before, .x::after {
+    position: absolute;
+    content: '';
+    width: 10%;
+    background-color: white;
+    height: 100%;
+}
+
+.x::before {
+    transform: rotate(45deg);
+}
+
+.x::after {
+    transform: rotate(-45deg);
+}
+
+.o::before {
+    position: absolute;
+    content: '';
+    background-color: white;
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+}
