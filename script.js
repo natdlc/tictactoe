@@ -38,22 +38,20 @@ const Game = (() => {
         if (moveCounter !== 0) moveCounter--;
         else if (moveCounter === 0) return;
         const lastCellClicked = cellClicks.pop();
+        const boardSplice = lastCell => board.splice(lastCell, 1, null);
         if (currentPlayer) {
             currentPlayer = 0;
             Elements.cells[lastCellClicked].classList.toggle('o');
-            board.splice(lastCellClicked,1,null);
+            boardSplice(lastCellClicked);
         }
         else if (!currentPlayer) {
-            console.log(currentPlayer);
             currentPlayer = 1;
             Elements.cells[lastCellClicked].classList.toggle('x');
-            board.splice(lastCellClicked,1,null);
-        }
+            boardSplice(lastCellClicked);
+        };
+    };
 
-    }
-
-    const activateUndo = () =>  Elements.undo.addEventListener('click', undoClick);
-    activateUndo();
+    const undoFeatureOn = () =>  Elements.undo.addEventListener('click', undoClick);
 
     const updateScore = (roundWinner) => {
         if (roundWinner === p1) {
@@ -99,6 +97,7 @@ const Game = (() => {
             Elements.p2NameElem.innerText = p2;
             modal.remove();
             Elements.wrapper.style = 'display: grid;';
+            undoFeatureOn();
         });
     };
 
