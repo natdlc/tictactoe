@@ -1,7 +1,7 @@
 const Game = (() => {
     /* 
     to-do: 
-        - ai (basic)
+        - undo for basic ai
         - ai (ultimate)
     */
     //init values
