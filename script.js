@@ -3,7 +3,6 @@ const Game = (() => {
     to-do: 
         - ai (basic)
         - ai (ultimate)
-        ** will come back for these in a while
     */
     //init values
 
@@ -16,7 +15,16 @@ const Game = (() => {
         const p2NameElem = document.querySelector('.p2-name-display');
         const p2ScoreElem = document.querySelector('.p2-score-display');
         const undo = document.querySelector('.undo');
-        return {cells, body, wrapper, p1NameElem, p1ScoreElem, p2NameElem, p2ScoreElem, undo};
+        return {
+            cells, 
+            body, 
+            wrapper, 
+            p1NameElem, 
+            p1ScoreElem, 
+            p2NameElem, 
+            p2ScoreElem, 
+            undo
+        };
     })();
 
     let board = [,,,,,,,,,];
@@ -24,8 +32,8 @@ const Game = (() => {
     const o = 'o';
     let p1Score = 0;
     let p2Score = 0;
-    let p1 = ''
-    let p2 = '';
+    let p1 = 'Player 1';
+    let p2 = 'Player 2';
     let winner = '';
     let currentPlayer = 1;
     let moveCounter = 0;
@@ -89,25 +97,25 @@ const Game = (() => {
         modal.appendChild(startBtn);
         modal.appendChild(aiBtn)
         Elements.wrapper.style = 'display: none;';
-        startBtn.addEventListener('click', () => {
-            if (p1Name.value == '') {
-                p1Name.setAttribute('placeholder', 'invalid player 1 name');
-                p1Name.style = 'border-bottom: 1px solid red;';
-                return;
-            };
-            if (p2Name.value == '') {
-                p2Name.style = 'border-bottom: 1px solid red;';
-                p2Name.setAttribute('placeholder', 'invalid player 2 name');
-                return
-            }
-            p1 = p1Name.value;
-            p2 = p2Name.value;
-            Elements.p1NameElem.innerText = p1;
-            Elements.p2NameElem.innerText = p2;
+        const initializeGame = () => {
             modal.remove();
             Elements.wrapper.style = 'display: grid;';
             undoFeatureOn();
+        }
+        startBtn.addEventListener('click', () => {
+            if (p1Name.value != '') p1 = p1Name.value;
+            if (p2Name.value != '') p2 = p2Name.value;
+            Elements.p1NameElem.innerText = p1;
+            Elements.p2NameElem.innerText = p2;
+            initializeGame();
         });
+        aiBtn.addEventListener('click', () => {
+            initializeGame();
+            if (p1Name.value != '') p1 = p1Name.value;
+            p2 = 'computer';
+            Elements.p2NameElem.innerText = p2;
+            Elements.p1NameElem.innerText = p1;
+        })
     };
 
 
@@ -126,6 +134,8 @@ const Game = (() => {
 
     const newGame = () => {
         clearBoard();
+        p1 = 'Player 1';
+        p2 = 'Player 2';
         p1Score = 0;
         p2Score = 0;
         Elements.p1ScoreElem.innerText = 0;
@@ -177,7 +187,7 @@ const Game = (() => {
         moveCounter = 0;
     };
 
-    const checkWin = () => {
+    const checkWinCondition = () => {
         if (board[0] == x && board[1] == x && board[2] == x) winner = p1
         else if (board[0] == x && board[3] == x && board[6] == x) winner = p1;
         else if (board[0] == x && board[4] == x && board[8] == x) winner = p1;
@@ -199,24 +209,7 @@ const Game = (() => {
         return winner;
     };
 
-    const clickAction = cell => {
-        const cellPos = cell.target.dataset.pos;
-        if (cell.target.classList.contains(o) || cell.target.classList.contains(x)) {
-            return;
-        }
-        else if (currentPlayer) {
-            cell.target.classList.toggle(x);
-            board.splice(cellPos,1,x);
-            currentPlayer = 0;
-        }
-        else {
-            cell.target.classList.toggle(o);
-            board.splice(cellPos,1,o);
-            currentPlayer = 1;
-        };
-        cellClicks.push(cellPos);
-        moveCounter++;
-        if (moveCounter >=5) console.log(moveCounter); winner = checkWin();
+    const checkWinner = winner => {
         if (winner === p1) {
             updateScore(p1);
             gameOver();
@@ -229,9 +222,60 @@ const Game = (() => {
             updateScore('draw');
             gameOver();
         };
+    }
+
+    const generateRandomCell = () => {
+        let randomCell = Math.floor((Math.random() * 9));
+        if (Elements.cells[randomCell].classList.contains(o) || Elements.cells[randomCell].classList.contains(x)) {
+            generateRandomCell();
+        }
+        else {
+            Elements.cells[randomCell].classList.toggle(o);
+            board.splice(randomCell,1,o)
+        };
     };
 
-    Elements.cells.forEach(cell => cell.addEventListener('click', clickAction));
+    const clickAction = cell => {
+        const cellPos = cell.target.dataset.pos;
 
+        if (cell.target.classList.contains(o) || cell.target.classList.contains(x)) {
+            return;
+        }
+        
+        else if (currentPlayer) {
+            cell.target.classList.toggle(x);
+            board.splice(cellPos,1,x);
+            moveCounter++;
+            currentPlayer = 0;
+            if (moveCounter === 9) {
+                winner = checkWinCondition();
+                checkWinner(winner);
+                return;
+            }
+            else if (p2 == 'computer') {
+                moveCounter++;
+                generateRandomCell();
+                currentPlayer = 1;
+                if (moveCounter >= 5) {
+                    winner = checkWinCondition(); 
+                    checkWinner(winner);
+                }
+
+                return;
+            }
+        }
+        else if (!currentPlayer) {
+            cell.target.classList.toggle(o);
+            board.splice(cellPos,1,o);
+            moveCounter++;
+            currentPlayer = 1;
+        };
+        cellClicks.push(cellPos);
+        if (moveCounter >=5) {
+            winner = checkWinCondition(); 
+            checkWinner(winner); 
+        }
+    };
+    Elements.cells.forEach(cell => cell.addEventListener('click', clickAction));
     createModalStart();
 })();
