@@ -101,7 +101,6 @@ const Game = (() => {
         });
     };
 
-    createModalStart();
 
     const clearBoard = () => {
         board = [,,,,,,,,,];
@@ -124,6 +123,8 @@ const Game = (() => {
         Elements.p2ScoreElem.innerText = 0;
         createModalStart();
     };
+
+    createModalStart();
 
     const createModalEnd = () => {
     
