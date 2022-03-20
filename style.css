@@ -81,21 +81,35 @@ body {
 }
 
 .restart-btn, .start-btn, .continue-btn, .btn, .modal-end-btn {
-    background: none;
-    color: white;
+    background: white;
+    border-radius: 50px;
+    color: black;
     border: 1px solid white;
-    padding: 10px 30px;
-    font-size: 2vmin;
+    padding: 1em;
+    font-size: min(2.5vmin, 16px);
     cursor: pointer;
+    width: 23vmin;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.ai-btn {
+    text-transform: uppercase;
 }
 
 .modal-start {
     display: flex;
+    flex-flow: column;
     justify-content: center;
     align-items: center;
     gap: 50px;
     background-color: rgb(0,0,0);
     z-index: 99;
+}
+
+.modal-end {
+    display: flex;
+    flex-flow: column;
 }
 
 .p1-name, .p2-name {
@@ -109,9 +123,18 @@ body {
     outline: none;
 }
 
-.scores-wrapper {
+.labels-wrapper {
     display: flex;
-    gap: 10%;
+    justify-content: space-between;
+    border-bottom: 1px solid white;
+    border-top: 1px solid white;
+    padding: 15px;
+    align-items: center;
+}
+
+.scores-wrapper {
+    gap: 15vmin;
+    display: flex;
 }
 
 .p1-wrapper, .p2-wrapper {
@@ -120,9 +143,11 @@ body {
 }
 
 .undo {
-    border: 1px solid rgb(138, 138, 138);
+    border: none;
     padding: 1em 2em;
-    margin: 0 auto;
+    background: none;
+    display: flex;
+    justify-content: center;
 }
 
 .undo img {

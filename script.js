@@ -72,8 +72,10 @@ const Game = (() => {
         const startBtn = document.createElement('button');
         const aiBtn = document.createElement('button');
         aiBtn.classList.add('btn');
-        aiBtn.innerText = 'vs computer'
-        welcomeMessage.innerText = `let's play tic tac toe!`;
+        aiBtn.classList.add('ai-btn');
+        aiBtn.innerText = 'vs computer';
+        welcomeMessage.innerText = `Tic Tac Toe`;
+        welcomeMessage.style = 'font-size: max(8vmin, 16px);'
         startBtn.classList.add('start-btn');
         startBtn.innerText = 'start';
         modal.classList.add('modal-start')
