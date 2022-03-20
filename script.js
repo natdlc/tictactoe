@@ -1,18 +1,26 @@
 const Game = (() => {
     /* 
     to-do: 
-        - player score display
-        - undo button
         - modal (start & end) design
         - require non-blank names
-        - create draw scenario
+        - create move counter to restrict checkWin
+        - mobile friendly
+        - ai (basic)
+        - ai (ultimate)
     */
     //init values
     const Elements = (() => {
         const cells = document.querySelectorAll('.cell');
         const body = document.querySelector('body');
-        return {cells, body};
+        const wrapper = document.querySelector('.wrapper');
+        const p1NameElem = document.querySelector('.p1-name-display');
+        const p1ScoreElem = document.querySelector('.p1-score-display');
+        const p2NameElem = document.querySelector('.p2-name-display');
+        const p2ScoreElem = document.querySelector('.p2-score-display');
+        const undo = document.querySelector('.undo');
+        return {cells, body, wrapper, p1NameElem, p1ScoreElem, p2NameElem, p2ScoreElem, undo};
     })();
+
     let board = [,,,,,,,,,];
     const x = 'x';
     const o = 'o';
@@ -21,6 +29,41 @@ const Game = (() => {
     let p1 = ''
     let p2 = '';
     let winner = '';
+    let currentPlayer = 1;
+    let moveCounter = 0;
+    let cellClicks = [];
+
+    const undoClick = () => {
+        if (moveCounter !== 0) moveCounter--;
+        else if (moveCounter === 0) return;
+        const lastCellClicked = cellClicks.pop();
+        if (currentPlayer) {
+            currentPlayer = 0;
+            Elements.cells[lastCellClicked].classList.toggle('o');
+            board.splice(lastCellClicked,1,null);
+        }
+        else if (!currentPlayer) {
+            console.log(currentPlayer);
+            currentPlayer = 1;
+            Elements.cells[lastCellClicked].classList.toggle('x');
+            board.splice(lastCellClicked,1,null);
+        }
+
+    }
+
+    const activateUndo = () =>  Elements.undo.addEventListener('click', undoClick);
+    activateUndo();
+
+    const updateScore = (roundWinner) => {
+        if (roundWinner === p1) {
+            p1Score++;
+            Elements.p1ScoreElem.innerText = p1Score;
+        }
+        else if (roundWinner === p2) {
+            p2Score++;
+            Elements.p2ScoreElem.innerText = p2Score;
+        };
+    };
 
     const createModalStart = () => {
         const modal = document.createElement('div');
@@ -29,7 +72,7 @@ const Game = (() => {
         const p2Name = document.createElement('input');
         const startBtn = document.createElement('button');
         const aiBtn = document.createElement('button');
-        aiBtn.classList.add('btn')
+        aiBtn.classList.add('btn');
         aiBtn.innerText = 'vs computer'
         welcomeMessage.innerText = `let's play tic tac toe!`;
         startBtn.classList.add('start-btn');
@@ -47,38 +90,40 @@ const Game = (() => {
         modal.appendChild(p2Name);
         modal.appendChild(startBtn);
         modal.appendChild(aiBtn)
+        Elements.wrapper.style = 'display: none;';
         startBtn.addEventListener('click', () => {
             p1 = p1Name.value;
             p2 = p2Name.value;
+            Elements.p1NameElem.innerText = p1;
+            Elements.p2NameElem.innerText = p2;
             modal.remove();
-        })
+            Elements.wrapper.style = 'display: grid;';
+        });
     };
+
     createModalStart();
 
-    const continueGame = () => {
+    const clearBoard = () => {
         board = [,,,,,,,,,];
         winner = '';
         Elements.cells.forEach(cell => {
-            if(cell.classList.contains(x) || cell.classList.contains(o)) {
+            if (cell.classList.contains(x) || cell.classList.contains(o)) {
                 cell.classList.remove(x);
                 cell.classList.remove(o);
             };
         });
     };
 
+    const continueGame = () => clearBoard();
+
     const restartGame = () => {
-        board = [,,,,,,,,,];
-        winner = '';
-        Elements.cells.forEach(cell => {
-            if(cell.classList.contains(x) || cell.classList.contains(o)) {
-                cell.classList.remove(x);
-                cell.classList.remove(o);
-            };
-        });
+        clearBoard();
         p1Score = 0;
         p2Score = 0;
+        Elements.p1ScoreElem.innerText = 0;
+        Elements.p2ScoreElem.innerText = 0;
         createModalStart();
-    }
+    };
 
     const createModalEnd = () => {
     
@@ -91,58 +136,62 @@ const Game = (() => {
         continueBtn.innerText = 'continue';
         continueBtn.classList.add('continue-btn', 'modal-end-btn');
         modal.classList.add('modal-end');
-        announce.innerText = `${winner} wins!`;
+        if (winner == 'draw') {
+            announce.innerText = `draw!`;
+        }
+        else {
+            announce.innerText = `${winner} wins!`;
+        }
         Elements.body.appendChild(modal);
         modal.appendChild(announce);
         modal.appendChild(continueBtn);
         modal.appendChild(restartBtn);
-        console.log(`P1 score: ${p1Score}`)
-        console.log(`P2 score: ${p2Score}`)
-    }
+    };
 
     const gameOver = () => {
         const removeModal = modal => {
             modal.remove();
             currentPlayer = 1;
-        }
+        };
         createModalEnd();
         document.querySelectorAll('.modal-end-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 if (btn.classList.contains('restart-btn')) {
                     restartGame();
                     removeModal(document.querySelector('.modal-end'))
-                    console.log('rest')
                 }
                 else {
                     continueGame();
                     removeModal(document.querySelector('.modal-end'))
-                    console.log('cont')
-                }
-            })
-        })
-    }
+                };
+            });
+        });
+        moveCounter = 0;
+    };
+
+
 
     const checkWin = () => {
         if (board[0] == x && board[1] == x && board[2] == x) winner = p1
-        else if (board[0] == x && board[3] == x && board[6] == x) winner = p1
-        else if (board[0] == x && board[4] == x && board[8] == x) winner = p1
-        else if (board[6] == x && board[7] == x && board[8] == x) winner = p1
-        else if (board[2] == x && board[5] == x && board[8] == x) winner = p1
-        else if (board[3] == x && board[4] == x && board[5] == x) winner = p1
-        else if (board[1] == x && board[4] == x && board[7] == x) winner = p1
-        else if (board[2] == x && board[4] == x && board[6] == x) winner = p1
+        else if (board[0] == x && board[3] == x && board[6] == x) winner = p1;
+        else if (board[0] == x && board[4] == x && board[8] == x) winner = p1;
+        else if (board[6] == x && board[7] == x && board[8] == x) winner = p1;
+        else if (board[2] == x && board[5] == x && board[8] == x) winner = p1;
+        else if (board[3] == x && board[4] == x && board[5] == x) winner = p1;
+        else if (board[1] == x && board[4] == x && board[7] == x) winner = p1;
+        else if (board[2] == x && board[4] == x && board[6] == x) winner = p1;
         //o win conditions
-        else if (board[0] == o && board[1] == o && board[2] == o) winner = p2
-        else if (board[0] == o && board[3] == o && board[6] == o) winner = p2
-        else if (board[0] == o && board[4] == o && board[8] == o) winner = p2
-        else if (board[6] == o && board[7] == o && board[8] == o) winner = p2
-        else if (board[2] == o && board[5] == o && board[8] == o) winner = p2
-        else if (board[3] == o && board[4] == o && board[5] == o) winner = p2
-        else if (board[1] == o && board[4] == o && board[7] == o) winner = p2
+        else if (board[0] == o && board[1] == o && board[2] == o) winner = p2;
+        else if (board[0] == o && board[3] == o && board[6] == o) winner = p2;
+        else if (board[0] == o && board[4] == o && board[8] == o) winner = p2;
+        else if (board[6] == o && board[7] == o && board[8] == o) winner = p2;
+        else if (board[2] == o && board[5] == o && board[8] == o) winner = p2;
+        else if (board[3] == o && board[4] == o && board[5] == o) winner = p2;
+        else if (board[1] == o && board[4] == o && board[7] == o) winner = p2;
         else if (board[2] == o && board[4] == o && board[6] == o) winner = p2;
+        else if (moveCounter == 9) winner = 'draw';
         return winner;
-    }
-    let currentPlayer = 1;
+    };
 
     const clickAction = cell => {
         const cellPos = cell.target.dataset.pos;
@@ -158,19 +207,22 @@ const Game = (() => {
             cell.target.classList.toggle('o');
             board.splice(cellPos,1,'o');
             currentPlayer = 1;
-        }
+        };
+        cellClicks.push(cellPos);
+        moveCounter++;
         winner = checkWin();
         if (winner === p1) {
-            p1Score++;
+            updateScore(p1);
             gameOver();
         }
-        if (winner === p2) {
-            p2Score++;
+        else if (winner === p2) {
+            updateScore(p2);
             gameOver();
         }
-    }
-
-    Elements.cells.forEach(cell => {
-        cell.addEventListener('click', clickAction)
-    })
+        else if (winner === 'draw') {
+            updateScore('draw');
+            gameOver();
+        };
+    };
+    Elements.cells.forEach(cell => cell.addEventListener('click', clickAction));
 })();

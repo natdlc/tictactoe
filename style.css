@@ -22,6 +22,10 @@ body {
     position: relative;
 }
 
+.wrapper {
+    gap: 5vmin;
+}
+
 .board-wrapper {
     width: 80vmin;
     height: 80vmin;
@@ -102,4 +106,25 @@ body {
 
 .p1-name:focus, .p2-name:focus {
     outline: none;
+}
+
+.scores-wrapper {
+    display: flex;
+    gap: 10%;
+}
+
+.p1-wrapper, .p2-wrapper {
+    font-size: min(4.5vmin, 24px);
+    font-weight: 100;
+}
+
+.undo {
+    border: 1px solid rgb(138, 138, 138);
+    padding: 1em 2em;
+    margin: 0 auto;
+}
+
+.undo img {
+    display: block;
+    width: min(10vmin, 32px)
 }
