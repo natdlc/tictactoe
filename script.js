@@ -9,6 +9,7 @@ const Game = (() => {
         - ai (ultimate)
     */
     //init values
+
     const Elements = (() => {
         const cells = document.querySelectorAll('.cell');
         const body = document.querySelector('body');
@@ -169,8 +170,6 @@ const Game = (() => {
         moveCounter = 0;
     };
 
-
-
     const checkWin = () => {
         if (board[0] == x && board[1] == x && board[2] == x) winner = p1
         else if (board[0] == x && board[3] == x && board[6] == x) winner = p1;
@@ -224,5 +223,6 @@ const Game = (() => {
             gameOver();
         };
     };
+    
     Elements.cells.forEach(cell => cell.addEventListener('click', clickAction));
 })();
