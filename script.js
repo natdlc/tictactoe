@@ -117,7 +117,7 @@ const Game = (() => {
 
     const continueGame = () => clearBoard();
 
-    const restartGame = () => {
+    const newGame = () => {
         clearBoard();
         p1Score = 0;
         p2Score = 0;
@@ -131,9 +131,9 @@ const Game = (() => {
         const modal = document.createElement('div');
         const announce = document.createElement('h1');
         const continueBtn = document.createElement('button');
-        const restartBtn = document.createElement('button');
-        restartBtn.classList.add('restart-btn', 'modal-end-btn');
-        restartBtn.innerText = 'restart';
+        const newGameBtn = document.createElement('button');
+        newGameBtn.classList.add('new-game-btn', 'modal-end-btn');
+        newGameBtn.innerText = 'new game';
         continueBtn.innerText = 'continue';
         continueBtn.classList.add('continue-btn', 'modal-end-btn');
         modal.classList.add('modal-end');
@@ -146,7 +146,7 @@ const Game = (() => {
         Elements.body.appendChild(modal);
         modal.appendChild(announce);
         modal.appendChild(continueBtn);
-        modal.appendChild(restartBtn);
+        modal.appendChild(newGameBtn);
     };
 
     const gameOver = () => {
@@ -157,8 +157,8 @@ const Game = (() => {
         createModalEnd();
         document.querySelectorAll('.modal-end-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                if (btn.classList.contains('restart-btn')) {
-                    restartGame();
+                if (btn.classList.contains('new-game-btn')) {
+                    newGame();
                     removeModal(document.querySelector('.modal-end'))
                 }
                 else {
