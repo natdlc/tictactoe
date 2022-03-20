@@ -3,7 +3,7 @@ const Game = (() => {
     to-do: 
         - modal (start & end) design
         - require non-blank names
-        - create move counter to restrict checkWin
+        - use move counter to restrict checkWin
         - mobile friendly
         - ai (basic)
         - ai (ultimate)
@@ -223,6 +223,6 @@ const Game = (() => {
             gameOver();
         };
     };
-    
+
     Elements.cells.forEach(cell => cell.addEventListener('click', clickAction));
 })();
