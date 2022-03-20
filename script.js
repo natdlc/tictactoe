@@ -1,10 +1,6 @@
 const Game = (() => {
     /* 
     to-do: 
-        - modal (start & end) design
-        - require non-blank names
-        - use move counter to restrict checkWin
-        - mobile friendly
         - ai (basic)
         - ai (ultimate)
     */
@@ -41,12 +37,12 @@ const Game = (() => {
         const boardSplice = lastCell => board.splice(lastCell, 1, null);
         if (currentPlayer) {
             currentPlayer = 0;
-            Elements.cells[lastCellClicked].classList.toggle('o');
+            Elements.cells[lastCellClicked].classList.toggle(o);
             boardSplice(lastCellClicked);
         }
         else if (!currentPlayer) {
             currentPlayer = 1;
-            Elements.cells[lastCellClicked].classList.toggle('x');
+            Elements.cells[lastCellClicked].classList.toggle(x);
             boardSplice(lastCellClicked);
         };
     };
@@ -83,8 +79,8 @@ const Game = (() => {
         p2Name.classList.add('p2-name');
         p1Name.setAttribute('type', 'text');
         p2Name.setAttribute('type', 'text');
-        p1Name.setAttribute('placeholder', 'player one name');
-        p2Name.setAttribute('placeholder', 'player two name');
+        p1Name.setAttribute('placeholder', 'player 1 name');
+        p2Name.setAttribute('placeholder', 'player 2 name');
         Elements.body.appendChild(modal);
         modal.appendChild(welcomeMessage);
         modal.appendChild(p1Name);
@@ -93,6 +89,16 @@ const Game = (() => {
         modal.appendChild(aiBtn)
         Elements.wrapper.style = 'display: none;';
         startBtn.addEventListener('click', () => {
+            if (p1Name.value == '') {
+                p1Name.setAttribute('placeholder', 'invalid player 1 name');
+                p1Name.style = 'border-bottom: 1px solid red;';
+                return;
+            };
+            if (p2Name.value == '') {
+                p2Name.style = 'border-bottom: 1px solid red;';
+                p2Name.setAttribute('placeholder', 'invalid player 2 name');
+                return
+            }
             p1 = p1Name.value;
             p2 = p2Name.value;
             Elements.p1NameElem.innerText = p1;
@@ -138,10 +144,10 @@ const Game = (() => {
         continueBtn.classList.add('continue-btn', 'modal-end-btn');
         modal.classList.add('modal-end');
         if (winner == 'draw') {
-            announce.innerText = `draw!`;
+            announce.innerText = `DRAW!`;
         }
         else {
-            announce.innerText = `${winner} wins!`;
+            announce.innerText = `${winner} WINS!`;
         }
         Elements.body.appendChild(modal);
         modal.appendChild(announce);
@@ -194,22 +200,22 @@ const Game = (() => {
 
     const clickAction = cell => {
         const cellPos = cell.target.dataset.pos;
-        if (cell.target.classList.contains('o') || cell.target.classList.contains('x')) {
+        if (cell.target.classList.contains(o) || cell.target.classList.contains(x)) {
             return;
         }
         else if (currentPlayer) {
-            cell.target.classList.toggle('x');
-            board.splice(cellPos,1,'x');
+            cell.target.classList.toggle(x);
+            board.splice(cellPos,1,x);
             currentPlayer = 0;
         }
         else {
-            cell.target.classList.toggle('o');
-            board.splice(cellPos,1,'o');
+            cell.target.classList.toggle(o);
+            board.splice(cellPos,1,o);
             currentPlayer = 1;
         };
         cellClicks.push(cellPos);
         moveCounter++;
-        winner = checkWin();
+        if (moveCounter >=5) console.log(moveCounter); winner = checkWin();
         if (winner === p1) {
             updateScore(p1);
             gameOver();
