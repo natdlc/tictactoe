@@ -3,6 +3,7 @@ const Game = (() => {
     to-do: 
         - ai (basic)
         - ai (ultimate)
+        ** will come back for these in a while
     */
     //init values
 
