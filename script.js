@@ -124,8 +124,6 @@ const Game = (() => {
         createModalStart();
     };
 
-    createModalStart();
-
     const createModalEnd = () => {
     
         const modal = document.createElement('div');
@@ -225,4 +223,6 @@ const Game = (() => {
     };
 
     Elements.cells.forEach(cell => cell.addEventListener('click', clickAction));
+
+    createModalStart();
 })();
