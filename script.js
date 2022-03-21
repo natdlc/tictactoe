@@ -1,7 +1,6 @@
 const Game = (() => {
     /* 
     to-do: 
-        - undo for basic ai
         - ai (ultimate)
     */
     //init values
@@ -42,17 +41,27 @@ const Game = (() => {
     const undoClick = () => {
         if (moveCounter !== 0) moveCounter--;
         else if (moveCounter === 0) return;
-        const lastCellClicked = cellClicks.pop();
+        let lastCell = cellClicks.pop();
         const boardSplice = lastCell => board.splice(lastCell, 1, null);
-        if (currentPlayer) {
+        if (p2 == 'computer') {
+            boardSplice(lastCell);
+            Elements.cells[lastCell].classList.toggle(o);
+            lastCell = cellClicks.pop();
+            boardSplice(lastCell);
+            Elements.cells[lastCell].classList.toggle(x);
+            moveCounter--;
+            console.log(moveCounter);
+        }
+        else if (currentPlayer) {
             currentPlayer = 0;
-            Elements.cells[lastCellClicked].classList.toggle(o);
-            boardSplice(lastCellClicked);
+            Elements.cells[lastCell].classList.toggle(o);
+            boardSplice(lastCell);
         }
         else if (!currentPlayer) {
+            console.log('ran');
             currentPlayer = 1;
-            Elements.cells[lastCellClicked].classList.toggle(x);
-            boardSplice(lastCellClicked);
+            Elements.cells[lastCell].classList.toggle(x);
+            boardSplice(lastCell);
         };
     };
 
@@ -185,6 +194,7 @@ const Game = (() => {
             });
         });
         moveCounter = 0;
+        cellClicks = [];
     };
 
     const checkWinCondition = () => {
@@ -231,8 +241,10 @@ const Game = (() => {
         }
         else {
             Elements.cells[randomCell].classList.toggle(o);
-            board.splice(randomCell,1,o)
+            board.splice(randomCell,1,o);
+            cellClicks.push(String(randomCell));
         };
+        return;
     };
 
     const clickAction = cell => {
@@ -241,37 +253,33 @@ const Game = (() => {
         if (cell.target.classList.contains(o) || cell.target.classList.contains(x)) {
             return;
         }
-        
         else if (currentPlayer) {
+            cellClicks.push(cellPos);
             cell.target.classList.toggle(x);
             board.splice(cellPos,1,x);
             moveCounter++;
             currentPlayer = 0;
-            if (moveCounter === 9) {
-                winner = checkWinCondition();
-                checkWinner(winner);
-                return;
-            }
-            else if (p2 == 'computer') {
+            winner = checkWinCondition(); 
+            checkWinner(winner);
+            if (p2 == 'computer' && winner == '') {
                 moveCounter++;
                 generateRandomCell();
+                winner = checkWinCondition(); 
+                checkWinner(winner);
                 currentPlayer = 1;
-                if (moveCounter >= 5) {
-                    winner = checkWinCondition(); 
-                    checkWinner(winner);
-                }
-
                 return;
             }
         }
         else if (!currentPlayer) {
+            cellClicks.push(cellPos);
             cell.target.classList.toggle(o);
             board.splice(cellPos,1,o);
             moveCounter++;
             currentPlayer = 1;
         };
-        cellClicks.push(cellPos);
+
         if (moveCounter >=5) {
+            console.log('ran 2');
             winner = checkWinCondition(); 
             checkWinner(winner); 
         }

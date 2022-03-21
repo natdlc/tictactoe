@@ -42,6 +42,10 @@ body {
     align-items: center;
 }
 
+.cell:hover {
+    background-color: rgb(25,25,25);
+}
+
 .x::before, .x::after {
     position: absolute;
     content: '';
@@ -126,18 +130,19 @@ body {
 .labels-wrapper {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgb(120, 120, 120);
     padding: 15px;
     align-items: center;
+    background-color: rgb(25,25,25);
+    border-radius: 25px;
 }
 
 .scores-wrapper {
-    gap: 15vmin;
+    gap: 4vmin;
     display: flex;
 }
 
 .p1-wrapper, .p2-wrapper {
-    font-size: min(4.5vmin, 24px);
+    font-size: min(3.5vmin, 24px);
     font-weight: 100;
 }
 
@@ -149,7 +154,11 @@ body {
     justify-content: center;
 }
 
+.undo:hover {
+    background-color:rgb(40, 40, 40);
+}
+
 .undo img {
     display: block;
-    width: min(10vmin, 32px)
+    width: min(5vmin, 32px)
 }
